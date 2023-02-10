@@ -19,4 +19,8 @@ public class AnimeService {
     public Anime findById(long id) {
         return animeRepository.findById(id);
     }
+
+    public Anime save(Anime anime) {
+        return animeRepository.save(anime);
+    }
 }

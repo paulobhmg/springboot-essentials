@@ -13,9 +13,10 @@ import java.util.List;
 @Repository
 @NoArgsConstructor
 public class AnimeRepository {
+    private List<Anime> animes = new ArrayList<>(ListGenerator.getAnimeList());
 
     public List<Anime> listAll() {
-        return new ArrayList<>(ListGenerator.getAnimeList());
+        return animes;
     }
 
     public Anime findById(long id) {
@@ -24,4 +25,10 @@ public class AnimeRepository {
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not found by id."));
     }
+
+    public Anime save(Anime anime) {
+        animes.add(anime);
+        return anime;
+    }
+
 }
