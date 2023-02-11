@@ -27,6 +27,11 @@ public class AnimeService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not found by ID."));
     }
 
+    public Anime findByNameOrThrowsBadRequest(String name) {
+        return animeRepository.findByName(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not found by name."));
+    }
+
     public Anime save(AnimePostRequestMapping animePostRequestMapping) {
         return animeRepository.save(animeMapper.toAnime(animePostRequestMapping));
     }

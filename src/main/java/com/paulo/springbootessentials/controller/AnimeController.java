@@ -23,8 +23,13 @@ public class AnimeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Anime> findById(@PathVariable long id) {
+    public ResponseEntity<Anime> findByIdOrThrowsBadRequest(@PathVariable long id) {
         return new ResponseEntity<>(animeService.findByIdOrThrowsBadRequest(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Anime> findByNameOrThrowsBadRequest(@RequestParam String name) {
+        return new ResponseEntity<>(animeService.findByNameOrThrowsBadRequest(name), HttpStatus.OK);
     }
 
     @PostMapping
