@@ -27,4 +27,8 @@ public class AnimeService {
     public void delete(long id) {
         animeRepository.delete(id);
     }
+
+    public void replace(Anime anime) {
+        animeRepository.replace(anime);
+    }
 }
