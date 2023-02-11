@@ -1,9 +1,14 @@
 package com.paulo.springbootessentials.service;
 
 import com.paulo.springbootessentials.domain.Anime;
+import com.paulo.springbootessentials.mapper.AnimeMapper;
 import com.paulo.springbootessentials.repository.AnimeRepository;
+import com.paulo.springbootessentials.requests.AnimePostRequestMapping;
+import com.paulo.springbootessentials.requests.AnimePutRequestMapping;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -11,24 +16,28 @@ import java.util.List;
 @AllArgsConstructor
 public class AnimeService {
     private AnimeRepository animeRepository;
+    private AnimeMapper animeMapper;
 
     public List<Anime> listAll() {
-        return animeRepository.listAll();
+        return animeRepository.findAll();
     }
 
-    public Anime findById(long id) {
-        return animeRepository.findById(id);
+    public Anime findByIdOrThrowsBadRequest(long id) {
+        return animeRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not found by ID."));
     }
 
-    public Anime save(Anime anime) {
-        return animeRepository.save(anime);
+    public Anime save(AnimePostRequestMapping animePostRequestMapping) {
+        return animeRepository.save(animeMapper.toAnime(animePostRequestMapping));
     }
 
     public void delete(long id) {
-        animeRepository.delete(id);
+        animeRepository.delete(findByIdOrThrowsBadRequest(id));
     }
 
-    public void replace(Anime anime) {
-        animeRepository.replace(anime);
+    public void replace(AnimePutRequestMapping animePutRequestMapping) {
+        Anime animeSaved = findByIdOrThrowsBadRequest(animePutRequestMapping.getId());
+        animePutRequestMapping.setId(animeSaved.getId());
+        animeRepository.save(animeMapper.toAnime(animePutRequestMapping));
     }
 }

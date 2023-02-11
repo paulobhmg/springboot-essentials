@@ -1,28 +1,27 @@
 package com.paulo.springbootessentials.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class Anime {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-    private List<Episode> episodes;
     private int numberOfEpisodes;
 
     public Anime(String name) {
-        this.id = ThreadLocalRandom.current().nextLong(1, 22020);
-        this.name = name;
-    }
-
-    public Anime(long id, String name) {
-        this.id = id;
         this.name = name;
     }
 }
