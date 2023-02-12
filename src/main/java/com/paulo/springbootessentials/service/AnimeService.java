@@ -1,14 +1,14 @@
 package com.paulo.springbootessentials.service;
 
 import com.paulo.springbootessentials.domain.Anime;
+import com.paulo.springbootessentials.exception.AnimeNotFoundException;
 import com.paulo.springbootessentials.mapper.AnimeMapper;
 import com.paulo.springbootessentials.repository.AnimeRepository;
 import com.paulo.springbootessentials.requests.AnimePostRequestMapping;
 import com.paulo.springbootessentials.requests.AnimePutRequestMapping;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,22 +24,26 @@ public class AnimeService {
 
     public Anime findByIdOrThrowsBadRequest(long id) {
         return animeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not found by ID."));
+                .orElseThrow(() -> new AnimeNotFoundException("Anime not found by ID."));
     }
 
     public Anime findByNameOrThrowsBadRequest(String name) {
         return animeRepository.findByName(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not found by name."));
+                .orElseThrow(() -> new AnimeNotFoundException("Anime not found by name."));
     }
 
-    public Anime save(AnimePostRequestMapping animePostRequestMapping) {
-        return animeRepository.save(animeMapper.toAnime(animePostRequestMapping));
+    @Transactional(rollbackFor = Exception.class)
+    public Anime save(AnimePostRequestMapping animePostRequestMapping) throws Exception {
+        animeRepository.save(animeMapper.toAnime(animePostRequestMapping));
+        throw new Exception("Error");
     }
 
+    @Transactional
     public void delete(long id) {
         animeRepository.delete(findByIdOrThrowsBadRequest(id));
     }
 
+    @Transactional
     public void replace(AnimePutRequestMapping animePutRequestMapping) {
         Anime animeSaved = findByIdOrThrowsBadRequest(animePutRequestMapping.getId());
         animePutRequestMapping.setId(animeSaved.getId());

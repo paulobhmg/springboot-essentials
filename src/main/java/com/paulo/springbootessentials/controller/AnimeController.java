@@ -23,17 +23,17 @@ public class AnimeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Anime> findByIdOrThrowsBadRequest(@PathVariable long id) {
+    public ResponseEntity<Anime> findByIdOrThrowsException(@PathVariable long id) {
         return new ResponseEntity<>(animeService.findByIdOrThrowsBadRequest(id), HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Anime> findByNameOrThrowsBadRequest(@RequestParam String name) {
+    public ResponseEntity<Anime> findByNameOrThrowsException(@RequestParam String name) {
         return new ResponseEntity<>(animeService.findByNameOrThrowsBadRequest(name), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Anime> save(@RequestBody AnimePostRequestMapping anime) {
+    public ResponseEntity<Anime> save(@RequestBody AnimePostRequestMapping anime) throws Exception{
         return new ResponseEntity<>(animeService.save(anime), HttpStatus.CREATED);
     }
 
