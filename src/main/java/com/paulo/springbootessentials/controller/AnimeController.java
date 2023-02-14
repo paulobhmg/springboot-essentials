@@ -4,6 +4,7 @@ import com.paulo.springbootessentials.domain.Anime;
 import com.paulo.springbootessentials.requests.AnimePostRequestMapping;
 import com.paulo.springbootessentials.requests.AnimePutRequestMapping;
 import com.paulo.springbootessentials.service.AnimeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +34,10 @@ public class AnimeController {
     }
 
     @PostMapping
-    public ResponseEntity<Anime> save(@RequestBody AnimePostRequestMapping anime) throws Exception{
-        return new ResponseEntity<>(animeService.save(anime), HttpStatus.CREATED);
+    public ResponseEntity<Anime> save(@RequestBody @Valid AnimePostRequestMapping animePostRequestMapping){
+        System.out.println(animePostRequestMapping.getName());
+        System.out.println(animePostRequestMapping.getNumberOfEpisodes());
+        return new ResponseEntity<>(animeService.save(animePostRequestMapping), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -44,8 +47,8 @@ public class AnimeController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> replace(@RequestBody AnimePutRequestMapping anime) {
-        animeService.replace(anime);
+    public ResponseEntity<Void> replace(@RequestBody AnimePutRequestMapping animePutRequestMapping) {
+        animeService.replace(animePutRequestMapping);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

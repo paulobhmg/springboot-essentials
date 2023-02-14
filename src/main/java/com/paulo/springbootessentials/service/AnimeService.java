@@ -1,7 +1,7 @@
 package com.paulo.springbootessentials.service;
 
 import com.paulo.springbootessentials.domain.Anime;
-import com.paulo.springbootessentials.exception.AnimeNotFoundException;
+import com.paulo.springbootessentials.exception.ObjectNotFoundException;
 import com.paulo.springbootessentials.mapper.AnimeMapper;
 import com.paulo.springbootessentials.repository.AnimeRepository;
 import com.paulo.springbootessentials.requests.AnimePostRequestMapping;
@@ -24,18 +24,17 @@ public class AnimeService {
 
     public Anime findByIdOrThrowsBadRequest(long id) {
         return animeRepository.findById(id)
-                .orElseThrow(() -> new AnimeNotFoundException("Anime not found by ID."));
+                .orElseThrow(() -> new ObjectNotFoundException("Anime not found by ID."));
     }
 
     public Anime findByNameOrThrowsBadRequest(String name) {
         return animeRepository.findByName(name)
-                .orElseThrow(() -> new AnimeNotFoundException("Anime not found by name."));
+                .orElseThrow(() -> new ObjectNotFoundException("Anime not found by name."));
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public Anime save(AnimePostRequestMapping animePostRequestMapping) throws Exception {
-        animeRepository.save(animeMapper.toAnime(animePostRequestMapping));
-        throw new Exception("Error");
+    @Transactional
+    public Anime save(AnimePostRequestMapping animePostRequestMapping) {
+        return animeRepository.save(animeMapper.toAnime(animePostRequestMapping));
     }
 
     @Transactional
