@@ -8,21 +8,21 @@ import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ObjectNotFoundException.class)
     protected ResponseEntity<BadRequestExceptionDetails> handleBadRequestException(ObjectNotFoundException exception, HttpRequest request) {
         return new ResponseEntity<>(
                 BadRequestExceptionDetails.builder()
-                        .title(exception.getClass().getSimpleName() + ": error getting anime.")
+                        .title("Error: Somethings wrong on retrieving data.")
                         .status(HttpStatus.BAD_REQUEST.value())
                         .details(exception.getMessage())
                         .timestamp(LocalDateTime.now())

@@ -7,6 +7,8 @@ import com.paulo.springbootessentials.repository.AnimeRepository;
 import com.paulo.springbootessentials.requests.AnimePostRequestMapping;
 import com.paulo.springbootessentials.requests.AnimePutRequestMapping;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 public class AnimeService {
     private AnimeRepository animeRepository;
-    private AnimeMapper animeMapper;
+
+    public Page<Anime> listAll(Pageable pageable) {
+        return animeRepository.findAll(pageable);
+    }
 
     public List<Anime> listAll() {
         return animeRepository.findAll();
@@ -34,7 +39,7 @@ public class AnimeService {
 
     @Transactional
     public Anime save(AnimePostRequestMapping animePostRequestMapping) {
-        return animeRepository.save(animeMapper.toAnime(animePostRequestMapping));
+        return animeRepository.save(AnimeMapper.INSTANCE.toAnime(animePostRequestMapping));
     }
 
     @Transactional
@@ -45,7 +50,6 @@ public class AnimeService {
     @Transactional
     public void replace(AnimePutRequestMapping animePutRequestMapping) {
         Anime animeSaved = findByIdOrThrowsBadRequest(animePutRequestMapping.getId());
-        animePutRequestMapping.setId(animeSaved.getId());
-        animeRepository.save(animeMapper.toAnime(animePutRequestMapping));
+        animeRepository.save(AnimeMapper.INSTANCE.toAnime(animePutRequestMapping));
     }
 }
