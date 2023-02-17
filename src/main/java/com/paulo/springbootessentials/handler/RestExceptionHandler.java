@@ -8,15 +8,15 @@ import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ObjectNotFoundException.class)
     protected ResponseEntity<BadRequestExceptionDetails> handleBadRequestException(ObjectNotFoundException exception, HttpRequest request) {
@@ -49,6 +49,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return createResponseEntity(details, headers, status, request);
     }
 
+    @Override
     protected ResponseEntity<Object> handleExceptionInternal(
             Exception exception, @Nullable Object body, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ExceptionDetails details = ExceptionDetails.builder()

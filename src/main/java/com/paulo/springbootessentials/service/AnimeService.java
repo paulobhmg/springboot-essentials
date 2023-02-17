@@ -32,9 +32,8 @@ public class AnimeService {
                 .orElseThrow(() -> new ObjectNotFoundException("Anime not found by ID."));
     }
 
-    public Anime findByNameOrThrowsBadRequest(String name) {
-        return animeRepository.findByName(name)
-                .orElseThrow(() -> new ObjectNotFoundException("Anime not found by name."));
+    public List<Anime> findByName(String name) {
+        return animeRepository.findByName(name);
     }
 
     @Transactional

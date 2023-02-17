@@ -36,8 +36,8 @@ public class AnimeController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Anime> findByNameOrThrowsException(@RequestParam String name) {
-        return new ResponseEntity<>(animeService.findByNameOrThrowsBadRequest(name), HttpStatus.OK);
+    public ResponseEntity<List<Anime>> findByName(@RequestParam String name) {
+        return new ResponseEntity<>(animeService.findByName(name), HttpStatus.OK);
     }
 
     @PostMapping

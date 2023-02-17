@@ -1,6 +1,8 @@
 package com.paulo.springbootessentials.repository;
 
 import com.paulo.springbootessentials.domain.Anime;
+import com.paulo.springbootessentials.utility.AnimeFactory;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
@@ -21,29 +24,54 @@ class AnimeRepositoryTest {
     @Test
     @DisplayName("Test a new anime persist when successful POST.")
     void save_persistAnime_whenSuccessful() {
-        Anime savedAnime = animeRepository.save(createAnime());
-        Anime animeBuilder = Anime.builder()
-                .id(savedAnime.getId())
-                .name(savedAnime.getName())
-                .numberOfEpisodes(savedAnime.getNumberOfEpisodes())
-                .build();
+        Anime savedAnime = animeRepository.save(AnimeFactory.createAnimeToBeSaved());
+        Anime animeBuilder = AnimeFactory.createValidAnime();
         Assertions.assertThat(animeBuilder).isNotNull();
         Assertions.assertThat(animeBuilder.getId()).isGreaterThan(0);
         Assertions.assertThat(animeBuilder.getName()).isEqualTo(savedAnime.getName());
     }
 
     @Test
+    @DisplayName("Test if is throws ConstraintViolationException when anime name is empty or null.")
+    void save_throwsConstraintViolationException_whenAnimeNameIsEmptyOrNull() {
+        Anime anime = new Anime();
+        /* Assertions.assertThatThrownBy(() -> animeRepository.save(anime))
+                .isInstanceOf(ConstraintViolationException.class); */
+        Assertions.assertThatExceptionOfType(ConstraintViolationException.class)
+                .isThrownBy(() -> animeRepository.save(anime));
+    }
+
+    @Test
+    @DisplayName("Test empty list when anime not found by name.")
+    void findByName_checkIfReturnsEmptyList_whenAnimeNotFoundByName() {
+        List<Anime> animeList = List.of(animeRepository.save(AnimeFactory.createAnimeToBeSaved()));
+        String animeName = "Shingeki no kyogin";
+        Assertions.assertThat(animeRepository.findByName(animeName)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Test if is throws ConstraintViolationException when anime number of episodes is < 0.")
+    void save_throwsConstraintViolationException_whenAnimeEpisodeNumberIsMinusThanZero() {
+        Anime anime = new Anime();
+        anime.setNumberOfEpisodes(-3);
+
+        log.info(anime);
+
+        Assertions.assertThatThrownBy(() -> animeRepository.save(anime))
+                .isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
     @DisplayName("Test replace anime that already exists when successful PUT.")
     void replace_replaceAnime_whenSuccessful() {
-        Anime savedAnime = animeRepository.save(createAnime());
+        Anime savedAnime = animeRepository.save(AnimeFactory.createAnimeToBeSaved());
         Optional<Anime> animeFound = animeRepository.findById(savedAnime.getId());
         Assertions.assertThat(animeFound).isNotEmpty();
-        Anime animeToUpdate = Anime.builder()
-                .id(animeFound.get().getId())
-                .name("Bleach")
-                .numberOfEpisodes(animeFound.get().getNumberOfEpisodes())
-                .build();
+
+        Anime animeToUpdate = animeFound.get();
+        animeToUpdate.setName("Shingeki no kyogin");
         Anime animeUpdated = animeRepository.save(animeToUpdate);
+
         Assertions.assertThat(animeUpdated).isNotNull();
         Assertions.assertThat(animeUpdated.getId()).isEqualTo(animeFound.get().getId());
         Assertions.assertThat(animeUpdated.getName()).isEqualTo(animeToUpdate.getName());
@@ -52,20 +80,16 @@ class AnimeRepositoryTest {
     @Test
     @DisplayName("Test remove anime when successful DELETE.")
     void delete_updateAnime_whenSuccessful() {
-        Anime savedAnime = animeRepository.save(createAnime());
+        Anime savedAnime = animeRepository.save(AnimeFactory.createAnimeToBeSaved());
         Assertions.assertThat(savedAnime.getId()).isGreaterThan(0);
 
         Optional<Anime> animeFound = animeRepository.findById(savedAnime.getId());
-        Assertions.assertThat(animeFound).isNotEmpty();
+        Assertions.assertThat(animeFound).isNotEmpty().contains(savedAnime);
 
         Anime animeToDelete = animeFound.get();
         animeRepository.delete(animeToDelete);
 
         Optional<Anime> animeDeleted = animeRepository.findById(animeToDelete.getId());
         Assertions.assertThat(animeDeleted).isEmpty();
-    }
-
-    private Anime createAnime() {
-        return Anime.builder().name("shingeki").build();
     }
 }
