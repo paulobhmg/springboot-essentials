@@ -2,10 +2,12 @@ package com.paulo.springbootessentials.requests;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
 @Data
+@Builder
 public class AnimePostRequestMapping {
 
     @NotBlank(message = "Name cannot be empty or null.")
