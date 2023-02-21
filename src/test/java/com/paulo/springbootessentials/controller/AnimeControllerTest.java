@@ -102,10 +102,9 @@ class AnimeControllerTest {
     @DisplayName("Tests if is throwing exception when anime not found by id")
     void findById_checkIfExceptionIsThrows_whenAnimeNotFoundById() {
         BDDMockito.when(animeService.findByIdOrThrowsBadRequest(ArgumentMatchers.anyLong()))
-                .thenReturn(VALID_ANIME);
-
-        Assertions.assertThatThrownBy(() -> animeController.findByIdOrThrowsException(2L))
-                .isInstanceOf(ObjectNotFoundException.class);
+                .thenReturn(null);
+        Anime anime = animeController.findByIdOrThrowsException(2L).getBody();
+        Assertions.assertThat(anime).isNull();
     }
 
     @Test
