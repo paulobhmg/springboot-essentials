@@ -21,11 +21,9 @@ public class Anime {
     private long id;
 
     @Column
-    @NotEmpty(message = "Anime name cannot be empty or null")
     private String name;
 
     @Column(name = "number_of_episodes")
-    @Min(value = 0, message = "cannot be < 0")
     private int numberOfEpisodes;
 
     public Anime(String name) {

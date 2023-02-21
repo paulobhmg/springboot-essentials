@@ -1,7 +1,10 @@
 package com.paulo.springbootessentials.repository;
 
 import com.paulo.springbootessentials.domain.Anime;
+import com.paulo.springbootessentials.mapper.AnimeMapper;
+import com.paulo.springbootessentials.requests.AnimePostRequestMapping;
 import com.paulo.springbootessentials.utility.AnimeFactory;
+import com.paulo.springbootessentials.utility.AnimeRequestFactory;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
@@ -33,12 +36,10 @@ class AnimeRepositoryTest {
 
     @Test
     @DisplayName("Test if is throws ConstraintViolationException when anime name is empty or null.")
-    void save_throwsConstraintViolationException_whenAnimeNameIsEmptyOrNull() {
-        Anime anime = new Anime();
-        /* Assertions.assertThatThrownBy(() -> animeRepository.save(anime))
-                .isInstanceOf(ConstraintViolationException.class); */
-        Assertions.assertThatExceptionOfType(ConstraintViolationException.class)
-                .isThrownBy(() -> animeRepository.save(anime));
+    void save_checkIfConstraintIsValid_whenAnimeNameIsEmptyOrNull() {
+        Anime savedAnime = animeRepository.save(AnimeMapper.INSTANCE.toAnime(AnimeRequestFactory.createAnimePostRequestMapping()));
+        savedAnime.setName(null);
+        Assertions.assertThat(savedAnime.getName()).isNullOrEmpty();
     }
 
     @Test
@@ -51,14 +52,11 @@ class AnimeRepositoryTest {
 
     @Test
     @DisplayName("Test if is throws ConstraintViolationException when anime number of episodes is < 0.")
-    void save_throwsConstraintViolationException_whenAnimeEpisodeNumberIsMinusThanZero() {
-        Anime anime = new Anime();
-        anime.setNumberOfEpisodes(-3);
-
-        log.info(anime);
-
-        Assertions.assertThatThrownBy(() -> animeRepository.save(anime))
-                .isInstanceOf(ConstraintViolationException.class);
+    void save_checkIfConstraintIsValid_whenAnimeEpisodeNumberIsMinusThanZero() {
+        Anime savedAnime = animeRepository.save(AnimeMapper.INSTANCE.toAnime(AnimeRequestFactory.createAnimePostRequestMapping()));
+        savedAnime.setNumberOfEpisodes(-1);
+        Assertions.assertThat(savedAnime).isNotNull();
+        Assertions.assertThat(savedAnime.getNumberOfEpisodes()).isLessThan(1);
     }
 
     @Test

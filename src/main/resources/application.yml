@@ -5,12 +5,11 @@ server:
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/anime?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
-    username: paulo
-    password: Ptanbh1@
+    username: dev
+    password: Dev@123@local
   jpa:
     hibernate:
       ddl-auto: update
-    #show-sql: true
 
 logging:
   level:

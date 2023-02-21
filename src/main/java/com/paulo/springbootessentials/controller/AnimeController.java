@@ -42,8 +42,6 @@ public class AnimeController {
 
     @PostMapping
     public ResponseEntity<Anime> save(@RequestBody @Valid AnimePostRequestMapping animePostRequestMapping){
-        System.out.println(animePostRequestMapping.getName());
-        System.out.println(animePostRequestMapping.getNumberOfEpisodes());
         return new ResponseEntity<>(animeService.save(animePostRequestMapping), HttpStatus.CREATED);
     }
 
