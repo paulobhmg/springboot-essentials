@@ -1,15 +1,10 @@
 package com.paulo.springbootessentials.integration;
 
 import com.paulo.springbootessentials.domain.Anime;
-import com.paulo.springbootessentials.mapper.AnimeMapper;
 import com.paulo.springbootessentials.repository.AnimeRepository;
-import com.paulo.springbootessentials.requests.AnimePostRequestMapping;
-import com.paulo.springbootessentials.requests.AnimePutRequestMapping;
 import com.paulo.springbootessentials.utility.AnimeFactory;
 import com.paulo.springbootessentials.utility.AnimeRequestFactory;
 import com.paulo.springbootessentials.wrapper.PageableResponse;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -20,14 +15,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.Collections;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,7 +28,6 @@ import java.util.List;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Log4j2
 class AnimeControllerIT {
-
     @Autowired
     private TestRestTemplate testRestTemplate;
 
@@ -44,19 +36,15 @@ class AnimeControllerIT {
 
     private final Anime ANIME_TO_BE_SAVED = AnimeFactory.createAnimeToBeSaved();
     private final Anime VALID_ANIME = AnimeFactory.createValidAnime();
-    private final List<Anime> EMPTY_LIST = Collections.emptyList();
-    private final PageImpl<Anime> EMPTY_PAGE = new PageImpl<>(EMPTY_LIST);
 
     @Test
     @DisplayName("Tests if list method returns a not empty page list.")
     void listPageable_returnsANotEmptyPageList_whenSuccessful() {
-        Anime savedAnime = animeRepository.save(ANIME_TO_BE_SAVED);
-        log.info(savedAnime);
+        animeRepository.save(ANIME_TO_BE_SAVED);
         Page<Anime> animePage = testRestTemplate.exchange("/animes", HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Anime>>() {}).getBody();
-        log.info(animePage);
-       // Assertions.assertThat(animePage).isNotNull();
-       // Assertions.assertThat(animePage.toList()).isNotEmpty();
+        Assertions.assertThat(animePage).isNotNull();
+        Assertions.assertThat(animePage.toList()).isNotEmpty();
     }
 
     @Test
@@ -137,7 +125,7 @@ class AnimeControllerIT {
     @Test
     @DisplayName("Tests anime replace")
     void replace_updatesAnime_whenSuccessful() {
-        Anime savedAnime = animeRepository.save(ANIME_TO_BE_SAVED);
+        animeRepository.save(ANIME_TO_BE_SAVED);
         ResponseEntity<Anime> exchange = testRestTemplate.exchange("/animes", HttpMethod.PUT,
                 new HttpEntity<>(AnimeRequestFactory.createAnimePutRequestMapping()), Anime.class);
         Assertions.assertThat(exchange).isNotNull();
@@ -147,7 +135,7 @@ class AnimeControllerIT {
     @Test
     @DisplayName("Tests anime delete")
     void delete_removesAnime_whenSuccessfull() {
-        Anime savedAnime = animeRepository.save(ANIME_TO_BE_SAVED);
+        animeRepository.save(ANIME_TO_BE_SAVED);
         ResponseEntity<Void> exchange = testRestTemplate.exchange("/animes/{id}", HttpMethod.DELETE, null,
                 Void.class, VALID_ANIME.getId());
         Assertions.assertThat(exchange).isNotNull();
