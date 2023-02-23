@@ -8,6 +8,8 @@ import com.paulo.springbootessentials.requests.AnimePutRequestMapping;
 import com.paulo.springbootessentials.utility.AnimeFactory;
 import com.paulo.springbootessentials.utility.AnimeRequestFactory;
 import com.paulo.springbootessentials.wrapper.PageableResponse;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -35,13 +37,12 @@ import java.util.List;
 class AnimeControllerIT {
 
     @Autowired
-    private AnimeRepository animeRepository;
-
-    @Autowired
     private TestRestTemplate testRestTemplate;
 
-    private final AnimePostRequestMapping ANIME_TO_BE_SAVED = AnimeRequestFactory.createAnimePostRequestMapping();
-    private final AnimePutRequestMapping UPDATED_ANIME = AnimeRequestFactory.createAnimePutRequestMapping();
+    @Autowired
+    private AnimeRepository animeRepository;
+
+    private final Anime ANIME_TO_BE_SAVED = AnimeFactory.createAnimeToBeSaved();
     private final Anime VALID_ANIME = AnimeFactory.createValidAnime();
     private final List<Anime> EMPTY_LIST = Collections.emptyList();
     private final PageImpl<Anime> EMPTY_PAGE = new PageImpl<>(EMPTY_LIST);
@@ -49,15 +50,13 @@ class AnimeControllerIT {
     @Test
     @DisplayName("Tests if list method returns a not empty page list.")
     void listPageable_returnsANotEmptyPageList_whenSuccessful() {
-        Anime savedAnime = animeRepository.save(AnimeMapper.INSTANCE.toAnime(ANIME_TO_BE_SAVED));
+        Anime savedAnime = animeRepository.save(ANIME_TO_BE_SAVED);
         log.info(savedAnime);
-        String expectedName = savedAnime.getName();
         Page<Anime> animePage = testRestTemplate.exchange("/animes", HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageableResponse<Anime>>() {}).getBody();
         log.info(animePage);
-        /*Assertions.assertThat(animePage).isNotNull();
-        Assertions.assertThat(animePage.toList()).isNotEmpty().hasSize(1);
-        Assertions.assertThat(animePage.toList().get(0).getName()).isEqualTo(expectedName);*/
+       // Assertions.assertThat(animePage).isNotNull();
+       // Assertions.assertThat(animePage.toList()).isNotEmpty();
     }
 
     @Test
@@ -71,7 +70,7 @@ class AnimeControllerIT {
     @Test
     @DisplayName("Tests if listNonPageable method returns a not empty list")
     void listNonPageable_returnsANotEmptyList_whenSuccessful() {
-        Anime savedAnime = animeRepository.save(AnimeMapper.INSTANCE.toAnime(ANIME_TO_BE_SAVED));
+        Anime savedAnime = animeRepository.save(ANIME_TO_BE_SAVED);
         String expectedName = savedAnime.getName();
         List<Anime> animeList = testRestTemplate.exchange("/animes/list", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Anime>>() {}).getBody();
@@ -90,7 +89,7 @@ class AnimeControllerIT {
     @Test
     @DisplayName("Tests if find anime by id")
     void findById_returnsAnime_whenSuccessful() {
-        Anime savedAnime = animeRepository.save(AnimeMapper.INSTANCE.toAnime(ANIME_TO_BE_SAVED));
+        Anime savedAnime = animeRepository.save(ANIME_TO_BE_SAVED);
         long expectedId = savedAnime.getId();
         Anime anime = testRestTemplate.getForObject("/animes/{id}", Anime.class, expectedId);
         Assertions.assertThat(anime).isNotNull();
@@ -108,7 +107,7 @@ class AnimeControllerIT {
     @Test
     @DisplayName("Tests if returns an anime find by name")
     void findByName_returnsAnimeList_whenSuccessful() {
-        Anime savedAnime = animeRepository.save(AnimeMapper.INSTANCE.toAnime(ANIME_TO_BE_SAVED));
+        Anime savedAnime = animeRepository.save(ANIME_TO_BE_SAVED);
         String expectedName = savedAnime.getName();
         String url = String.format("/animes/search?name=%s", expectedName);
         List<Anime> animeList = testRestTemplate.exchange(url, HttpMethod.GET, null,
@@ -138,7 +137,7 @@ class AnimeControllerIT {
     @Test
     @DisplayName("Tests anime replace")
     void replace_updatesAnime_whenSuccessful() {
-        Anime savedAnime = animeRepository.save(AnimeMapper.INSTANCE.toAnime(UPDATED_ANIME));
+        Anime savedAnime = animeRepository.save(ANIME_TO_BE_SAVED);
         ResponseEntity<Anime> exchange = testRestTemplate.exchange("/animes", HttpMethod.PUT,
                 new HttpEntity<>(AnimeRequestFactory.createAnimePutRequestMapping()), Anime.class);
         Assertions.assertThat(exchange).isNotNull();
@@ -148,7 +147,7 @@ class AnimeControllerIT {
     @Test
     @DisplayName("Tests anime delete")
     void delete_removesAnime_whenSuccessfull() {
-        Anime savedAnime = animeRepository.save(AnimeMapper.INSTANCE.toAnime(ANIME_TO_BE_SAVED));
+        Anime savedAnime = animeRepository.save(ANIME_TO_BE_SAVED);
         ResponseEntity<Void> exchange = testRestTemplate.exchange("/animes/{id}", HttpMethod.DELETE, null,
                 Void.class, VALID_ANIME.getId());
         Assertions.assertThat(exchange).isNotNull();

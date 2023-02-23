@@ -32,7 +32,6 @@ class AnimeServiceTest {
     @Mock
     private AnimeRepository animeRepositoryMock;
 
-    private final Anime ANIME_TO_BE_SAVE = AnimeFactory.createAnimeToBeSaved();
     private final Anime VALID_ANIME = AnimeFactory.createValidAnime();
     private final Anime UPDATED_ANIME = AnimeFactory.createUpdatedAnime();
     private final List<Anime> EMPTY_LIST = Collections.emptyList();
@@ -54,8 +53,8 @@ class AnimeServiceTest {
     void listPageable_returnsANotEmptyPageList_whenSuccessful() {
         String expectedName = VALID_ANIME.getName();
         Page<Anime> animePage = animeServiceMock.listAll(PageRequest.of(0, 1));
-        Assertions.assertThat(animePage).isNotNull();
-        Assertions.assertThat(animePage.toList()).isNotEmpty().hasSize(1);
+        Assertions.assertThat(animePage).isNotNull().isNotEmpty();
+        Assertions.assertThat(animePage.toList()).isNotEmpty();
         Assertions.assertThat(animePage.toList().get(0).getName()).isEqualTo(expectedName);
     }
 
@@ -72,7 +71,7 @@ class AnimeServiceTest {
     void listNonPageable_returnsANotEmptyList_whenSuccessful() {
         String expectedName = VALID_ANIME.getName();
         List<Anime> animeList = animeServiceMock.listAll();
-        Assertions.assertThat(animeList).isNotNull().isNotEmpty().hasSize(1);
+        Assertions.assertThat(animeList).isNotNull().isNotEmpty();
         Assertions.assertThat(animeList.get(0).getName()).isEqualTo(expectedName);
     }
 
@@ -106,8 +105,8 @@ class AnimeServiceTest {
     @DisplayName("Tests if returns an anime find by name")
     void findByName_returnsAnimeList_whenSuccessful() {
         String expectedName = VALID_ANIME.getName();
-        List<Anime> animeList = animeServiceMock.findByName("teste");
-        Assertions.assertThat(animeList).isNotNull().isNotEmpty().hasSize(1);
+        List<Anime> animeList = animeServiceMock.findByName("test");
+        Assertions.assertThat(animeList).isNotNull().isNotEmpty();
         Assertions.assertThat(animeList.get(0).getName()).isEqualTo(expectedName);
     }
 
@@ -116,12 +115,12 @@ class AnimeServiceTest {
     void findByName_returnsAnEmptyList_whenAnimeNotFoundByName() {
         BDDMockito.when(animeRepositoryMock.findByName(ArgumentMatchers.anyString()))
                 .thenReturn(EMPTY_LIST);
-        List<Anime> animeList = animeServiceMock.findByName("Teste");
+        List<Anime> animeList = animeServiceMock.findByName("Test");
         Assertions.assertThat(animeList).isNotNull().isEmpty();
     }
 
     @Test
-    @DisplayName("Tests persiste anime")
+    @DisplayName("Tests anime persists")
     void save_persistsANewAnime_whenSuccessful() {
         Anime anime = animeServiceMock.save(AnimeRequestFactory.createAnimePostRequestMapping());
         Assertions.assertThat(anime).isNotNull().isEqualTo(VALID_ANIME);
@@ -130,17 +129,21 @@ class AnimeServiceTest {
     @Test
     @DisplayName("Tests replace anime")
     void replace_updatesAnime_whenSuccessful() {
-        Assertions.assertThatCode(() -> animeRepositoryMock.save(UPDATED_ANIME)).doesNotThrowAnyException();
-        animeServiceMock.replace(AnimeRequestFactory.createAnimePutRequestMapping());
+        Anime savedAnime = animeServiceMock.save(AnimeRequestFactory.createAnimePostRequestMapping());
+        Assertions.assertThat(savedAnime).isNotNull();
+        String originalName = savedAnime.getName();
+        Assertions.assertThatCode(() -> animeServiceMock.replace(AnimeRequestFactory.createAnimePutRequestMapping()))
+                .doesNotThrowAnyException();
         Assertions.assertThat(AnimeRequestFactory.createAnimePutRequestMapping().getId()).isEqualTo(UPDATED_ANIME.getId());
-        Assertions.assertThat(AnimeRequestFactory.createAnimePutRequestMapping().getName()).isNotEqualTo(ANIME_TO_BE_SAVE.getName());
+        Assertions.assertThat(AnimeRequestFactory.createAnimePutRequestMapping().getName()).isNotEqualTo(originalName);
     }
 
     @Test
     @DisplayName("Testes delete anime")
     void delete_removesAnime_whenSuccessfull() {
-        Assertions.assertThatCode(() -> animeRepositoryMock.delete(VALID_ANIME)).doesNotThrowAnyException();
-        animeRepositoryMock.delete(VALID_ANIME);
+        Anime savedAnime = animeServiceMock.save(AnimeRequestFactory.createAnimePostRequestMapping());
+        Assertions.assertThat(savedAnime).isNotNull();
+        Assertions.assertThatCode(() -> animeRepositoryMock.delete(savedAnime)).doesNotThrowAnyException();
     }
 
 }

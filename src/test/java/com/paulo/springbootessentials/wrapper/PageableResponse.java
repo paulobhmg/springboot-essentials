@@ -35,6 +35,5 @@ public class PageableResponse<T> extends PageImpl<T> {
         this.first = first;
         this.totalPages = totalPages;
         this.numberOfElements = numberOfElements;
-
     }
 }

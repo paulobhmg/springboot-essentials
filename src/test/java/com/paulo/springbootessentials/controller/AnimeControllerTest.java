@@ -121,19 +121,19 @@ class AnimeControllerTest {
     void findByName_returnsAnEmptyList_whenAnimeNotFoundByName() {
         BDDMockito.when(animeService.findByName(ArgumentMatchers.anyString()))
                 .thenReturn(EMPTY_LIST);
-        List<Anime> animeList = animeController.findByName("Teste").getBody();
+        List<Anime> animeList = animeController.findByName("Test").getBody();
         Assertions.assertThat(animeList).isNotNull().isEmpty();
     }
 
     @Test
-    @DisplayName("Tests persiste anime")
+    @DisplayName("Tests anime persists")
     void save_persistsANewAnime_whenSuccessful() {
         Anime anime = animeController.save(AnimeRequestFactory.createAnimePostRequestMapping()).getBody();
         Assertions.assertThat(anime).isNotNull().isEqualTo(VALID_ANIME);
     }
 
     @Test
-    @DisplayName("Tests replace anime")
+    @DisplayName("Tests anime replaces")
     void replace_updatesAnime_whenSuccessful() {
         Assertions.assertThatCode(() -> animeController.replace(AnimeRequestFactory.createAnimePutRequestMapping()))
                         .doesNotThrowAnyException();
@@ -143,8 +143,8 @@ class AnimeControllerTest {
     }
 
     @Test
-    @DisplayName("Testes delete anime")
-    void delete_removesAnime_whenSuccessfull() {
+    @DisplayName("Testes anime delete")
+    void delete_removesAnime_whenSuccessful() {
         Assertions.assertThatCode(() -> animeController.delete(1L)).doesNotThrowAnyException();
         ResponseEntity<Void> entity = animeController.delete(1L);
         Assertions.assertThat(entity).isNotNull();
