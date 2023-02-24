@@ -12,7 +12,7 @@ import java.util.List;
 public class SystemWebMvcConfig implements WebMvcConfigurer {
 
     /** This method overrides the superclass behavior, modifying the default page size from springboot
-     * @param resolvers inject the configuration list, putting the pageHandler customized fallback. */
+     * @param resolvers injects the configuration list, putting the pageHandler customized fallback. */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         PageableHandlerMethodArgumentResolver pageHandler = new PageableHandlerMethodArgumentResolver();
