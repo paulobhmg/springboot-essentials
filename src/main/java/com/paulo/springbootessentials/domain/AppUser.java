@@ -38,6 +38,9 @@ public class AppUser implements UserDetails {
     @Column
     private String authorities;
 
+    @Column(name = "enabled")
+    private boolean isEnabled = true;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.stream(authorities.split(", "))

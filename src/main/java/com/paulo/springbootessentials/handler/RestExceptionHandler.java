@@ -18,17 +18,16 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
     @ExceptionHandler(ObjectNotFoundException.class)
-    protected ResponseEntity<BadRequestExceptionDetails> handleBadRequestException(ObjectNotFoundException exception, HttpRequest request) {
-        return new ResponseEntity<>(
-                BadRequestExceptionDetails.builder()
-                        .title("Error: Somethings wrong on retrieving data.")
-                        .status(HttpStatus.BAD_REQUEST.value())
-                        .details(exception.getMessage())
-                        .timestamp(LocalDateTime.now())
-                        .path(request.getURI().getPath())
-                        .build()
-                , HttpStatus.BAD_REQUEST);
+    protected ResponseEntity<Object> handleBadRequestException(ObjectNotFoundException exception, WebRequest request) {
+        BadRequestExceptionDetails details = BadRequestExceptionDetails.builder()
+                .title("Error: Somethings wrong on retrieving data.")
+                .status(HttpStatus.BAD_REQUEST.value())
+                .details(exception.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return createResponseEntity(details, null, HttpStatus.BAD_REQUEST, request);
     }
 
     @Override
@@ -43,7 +42,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .fields(fields)
                 .errors(errors)
-                .path(request.getHeader("path"))
                 .status(status.value())
                 .build();
         return createResponseEntity(details, headers, status, request);
@@ -58,7 +56,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .details(exception.getMessage())
                 .status(status.value())
                 .timestamp(LocalDateTime.now())
-                .path(request.getContextPath())
                 .build();
         return createResponseEntity(details, headers, status, request);
     }

@@ -1,8 +1,8 @@
 package com.paulo.springbootessentials.repository;
 
+import com.paulo.springbootessentials.domain.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.userdetails.UserDetails;
 
-public interface AppUserRepository extends JpaRepository<AppUserRepository, Integer> {
-    UserDetails findUserByUsername(String username);
+public interface AppUserRepository extends JpaRepository<AppUser, Integer> {
+    AppUser findUserByUsername(String username);
 }

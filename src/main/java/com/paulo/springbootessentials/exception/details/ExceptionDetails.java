@@ -12,6 +12,5 @@ public class ExceptionDetails {
     protected String exception;
     protected int status;
     protected LocalDateTime timestamp;
-    protected String path;
     protected String details;
 }
