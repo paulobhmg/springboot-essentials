@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
-public class SystemWebMvcConfig implements WebMvcConfigurer {
+public class GlobalConfig implements WebMvcConfigurer {
 
     /** This method overrides the superclass behavior, modifying the default page size from springboot
      * @param resolvers injects the configuration list, putting the pageHandler customized fallback. */

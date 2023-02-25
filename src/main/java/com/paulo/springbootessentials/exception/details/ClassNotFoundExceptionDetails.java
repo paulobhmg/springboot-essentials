@@ -5,6 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class AccessDeniedExceptionDetails extends ExceptionDetails{
+public class ClassNotFoundExceptionDetails extends ExceptionDetails {
 
 }

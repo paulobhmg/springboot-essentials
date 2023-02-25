@@ -1,7 +1,6 @@
 package com.paulo.springbootessentials.controller;
 
 import com.paulo.springbootessentials.domain.Anime;
-import com.paulo.springbootessentials.exception.ObjectNotFoundException;
 import com.paulo.springbootessentials.requests.AnimePostRequestMapping;
 import com.paulo.springbootessentials.requests.AnimePutRequestMapping;
 import com.paulo.springbootessentials.service.AnimeService;

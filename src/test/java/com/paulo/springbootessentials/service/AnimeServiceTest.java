@@ -145,5 +145,4 @@ class AnimeServiceTest {
         Assertions.assertThat(savedAnime).isNotNull();
         Assertions.assertThatCode(() -> animeRepositoryMock.delete(savedAnime)).doesNotThrowAnyException();
     }
-
 }

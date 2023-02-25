@@ -1,25 +1,18 @@
 package com.paulo.springbootessentials.repository;
 
 import com.paulo.springbootessentials.domain.Anime;
-import com.paulo.springbootessentials.mapper.AnimeMapper;
-import com.paulo.springbootessentials.requests.AnimePostRequestMapping;
 import com.paulo.springbootessentials.utility.AnimeFactory;
-import com.paulo.springbootessentials.utility.AnimeRequestFactory;
-import jakarta.validation.ConstraintViolationException;
-import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
 @DisplayName("Anime repository persistent tests")
-@Log4j2
 class AnimeRepositoryTest {
 
     @Autowired
