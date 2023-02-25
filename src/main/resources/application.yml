@@ -16,3 +16,14 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics
+
+info:
+  app: "Anime API developed by Devdojo springboot essentials course"
+  website: "https://devdojo.academy"
+  github: "https://github.com/paulobhmg/springboot-essentials"
