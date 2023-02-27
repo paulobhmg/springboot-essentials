@@ -21,9 +21,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: info, health, metrics
+        include: info, health, metrics, prometheus
 
 info:
-  app: "Anime API developed by Devdojo springboot essentials course"
-  website: "https://devdojo.academy"
-  github: "https://github.com/paulobhmg/springboot-essentials"
+  app: Anime API developed by Devdojo springboot essentials course
+  website: https://devdojo.academy
+  github: https://github.com/paulobhmg/springboot-essentials
